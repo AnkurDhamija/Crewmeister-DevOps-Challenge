@@ -2,9 +2,8 @@ name: Build and Deploy crewmeister application
 
 on:
   push:
-    paths:
-      - './**'
-      - 'crewmeister/**'
+    branches:
+      - master
        
 jobs:
   build-and-deploy:
