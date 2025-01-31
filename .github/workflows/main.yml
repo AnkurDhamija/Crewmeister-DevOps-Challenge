@@ -19,7 +19,6 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Log in to Amazon ECR
@@ -30,12 +29,12 @@ jobs:
 
       - name: Build Docker image 
         env: 
-          IMAGE_TAG: "${{ secrets.API_ECR_REPOSITORY }}:api-gateway-${{ github.sha }}" 
+          IMAGE_TAG: "${{ secrets.ECR_REPOSITORY }}:crewmeister-${{ github.sha }}" 
         run: |
           docker build -t $IMAGE_TAG -f Dockerfile
 
       - name: Push Docker image to ECR 
         env: 
-          IMAGE_TAG: "${{ secrets.API_ECR_REPOSITORY }}:api-gateway-${{ github.sha }}" 
+          IMAGE_TAG: "${{ secrets.ECR_REPOSITORY }}:crewmeister-${{ github.sha }}" 
         run: | 
           docker push $IMAGE_TAG
