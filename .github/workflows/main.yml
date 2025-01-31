@@ -30,7 +30,7 @@ jobs:
         env: 
           IMAGE_TAG: "${{ secrets.ECR_REPOSITORY }}:crewmeister-${{ github.sha }}" 
         run: |
-          docker build -t $IMAGE_TAG -f ~/Dockerfile .
+          docker build -t $IMAGE_TAG -f Dockerfile .
 
       - name: Push Docker image to ECR 
         env: 
