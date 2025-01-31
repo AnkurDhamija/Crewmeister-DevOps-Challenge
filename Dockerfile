@@ -7,6 +7,7 @@ WORKDIR /app
 # Copy only necessary files for dependency resolution
 COPY pom.xml .
 
+
 # Download dependencies to cache them
 RUN mvn dependency:go-offline -B
 
