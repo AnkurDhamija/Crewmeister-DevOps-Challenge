@@ -1,4 +1,4 @@
-name: Build and Deploy crewmeister application
+name: Build and Deploy crewmeister application with Helm Chart on EKS
 
 on:
   push:
