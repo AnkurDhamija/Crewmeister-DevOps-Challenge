@@ -56,7 +56,6 @@ service:
   # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
   port: 8090
   targetPort: 8090  # This should match the port your container is listening on
- # nodePort: 32588  # Expose service on port 31440 (NodePort)
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
