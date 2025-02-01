@@ -47,7 +47,7 @@ jobs:
           cat ~/.kube/config
           kubectl cluster-info
 
-      - name: Deploy API Gateway with Helm
+      - name: Deploy crewmeister application with Helm
         run: |
           helm upgrade --install crewmeister crewmeister \
             --set image.tag=crewmeister-${{ github.sha }}
