@@ -51,3 +51,7 @@ jobs:
         run: |
           helm upgrade --install crewmeister crewmeister \
             --set image.tag=crewmeister-${{ github.sha }}
+
+      - name: Verify Deployment
+        run: |
+          helm list
