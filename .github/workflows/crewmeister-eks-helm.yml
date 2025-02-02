@@ -54,6 +54,11 @@ jobs:
         run: |
           aws eks update-kubeconfig --name crewmeister --region ${{ secrets.AWS_REGION }}
 
+      - name: Check Kubeconfig
+        run: |
+          cat ~/.kube/config
+          kubectl config view
+
       - name: Test Kubernetes cluster connection
         run: |
           kubectl cluster-info
