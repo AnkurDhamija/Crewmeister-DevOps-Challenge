@@ -11,25 +11,18 @@ permissions:
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      #- name: Configure AWS Credentials
-       # uses: aws-actions/configure-aws-credentials@v1
-       # with:
-        #  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-         # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-         # aws-region: ${{ secrets.AWS_REGION }}  
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
-          
+
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
@@ -37,45 +30,19 @@ jobs:
         run: |
           aws sts get-caller-identity
 
-      - name: Debug OIDC Token
-        run: |
-          echo "Fetching OIDC Token..."
-          curl -sH "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL"
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
+      - name: Set version variables
+        run: |
+          echo "MAJOR_VERSION=1" >> $GITHUB_ENV
+          echo "MINOR_VERSION=${{ github.run_number }}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${{ secrets.ECR_REPOSITORY }}:crewmeister-1.${{ github.run_number }}" >> $GITHUB_ENV
+
       - name: Build Docker image
-        env: 
-          IMAGE_TAG: "${{ secrets.ECR_REPOSITORY }}:crewmeister-${{ github.sha }}" 
         run: |
           docker build -t $IMAGE_TAG -f Dockerfile .
 
       - name: Push Docker image to ECR
-        env: 
-          IMAGE_TAG: "${{ secrets.ECR_REPOSITORY }}:crewmeister-${{ github.sha }}" 
         run: | 
           docker push $IMAGE_TAG
-
-      - name: Update kubeconfig
-        run: |
-          aws eks update-kubeconfig --name crewmeister --region ${{ secrets.AWS_REGION }}
-
-      - name: Check Kubeconfig
-        run: |
-          cat ~/.kube/config
-          kubectl config view
-
-      - name: Test Kubernetes cluster connection
-        run: |
-          kubectl cluster-info
-
-      - name: Deploy crewmeister application with Helm
-        run: |
-          helm upgrade --install crewmeister crewmeister \
-            --set image.tag=crewmeister-${{ github.sha }}
-        
-
-      - name: Verify Deployment
-        run: |
-          helm list
