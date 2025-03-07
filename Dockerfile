@@ -34,7 +34,6 @@ RUN chown appuser:appgroup /crewmeisterchallenge.jar && chmod 500 /crewmeisterch
 
 # Switch to the non-root user
 USER appuser
-
 # Expose the application's default port
 EXPOSE 8090
 
